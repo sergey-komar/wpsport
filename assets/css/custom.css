@@ -101,9 +101,32 @@ li.current-menu-item a{
     display: block;
 }
 
-
-
-
+/* product */
+.goods-block__wrapper{
+    padding-bottom: 30px;
+    background: transparent;
+}
+.goods-block__item{
+    position: relative;
+    background: rgba(38, 87, 54, 0.04);
+}
+.goods-block__bottom{
+    width: 100%;
+    justify-content: unset;
+    position: absolute;
+    bottom: 15px;
+}
+.goods-block__bottom-cart,
+.goods-block__bottom-buy{
+    max-width: 180px;
+}
+.goods-block__item-title{
+    font-size: 27px;
+    line-height: 1.2;
+}
+.goods-block__item-text{
+    margin-bottom: 10px;
+}
 
 /* /404 */
 .error {

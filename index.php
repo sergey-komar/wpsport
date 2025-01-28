@@ -86,70 +86,52 @@
           <div class="offer__subtitle">Специальное</div>
           <h3 class="offer__title">Специальное предложение</h3>
           <div class="offer-block">
+
+              <?php
+                $special = new WP_Query([
+                    'post_type' => 'product',
+                    'posts_per_page' => 3,
+                    'tax_query' => array(
+                      array(
+                          'taxonomy' => 'product_visibility',
+                          'field'    => 'name',
+                          'terms'    => 'featured',
+                      ),
+                  ),
+                ])
+                ?>
+             
+            
+            <?php if($special->have_posts()) : while($special->have_posts()) : $special->the_post();?>
+            <?php //debug($product)?>
             <div class="offer-block__item">
               <div class="offer-block__item-title">Предложение дня</div>
               <div class="offer-block__item-text">
-                <span>Скидка 20%</span>
+                <span>Скидка <?php the_field('skidka');?></span>
                 на «Название продукта» до конца месяца!
               </div>
               <div class="offer-block__item-img">
-                <img src="./images/home/offer-img.jpg" alt="img">
+                <img src="<?php the_post_thumbnail_url();?>" alt="img">
               </div>
               <div class="offer-block__price">
-                <div class="offer-block__price-new">1000 ₽</div>
-                <div class="offer-block__price-old">1500 ₽</div>
+                <div class="offer-block__price-new">
+                  <?php echo $product->regular_price;?> ₽
+                </div>
+                <div class="offer-block__price-old">
+                <?php echo $product->sale_price;?> ₽
+                </div>
+               
               </div>
-              <a href="#" class="offer-block__item-btn btn">Купить</a>
+              <a href="<?php the_permalink()?>" class="offer-block__item-btn btn">Купить</a>
+             <?php if(!empty(get_field('tajmer'))):?>
+              <div class="test">
+                <?php echo do_shortcode('[hurrytimer id="202"]')?>
+              </div>
+            <?php endif;?>
             </div>
-            <div class="offer-block__item">
-              <div class="offer-block__item-title">Предложение дня</div>
-              <div class="offer-block__item-text">
-                <span>Скидка 20%</span>
-                на «Название продукта» до конца месяца!
-              </div>
-              <div class="offer-block__item-img">
-                <img src="./images/home/offer-img.jpg" alt="img">
-              </div>
-              <div class="timer">
-                <div class="timer__block">
-                    <span id="days"></span>
-                    :
-                </div>
-                <div class="timer__block">
-                    <span id="hours"></span>
-                   :
-                </div>
-                <div class="timer__block">
-                    <span id="minutes"></span>
-                   :
-                </div>
-                <div class="timer__block">
-                    <span id="seconds"></span>
-                    
-                </div>
-              </div>
-              <div class="offer-block__price">
-                <div class="offer-block__price-new">1000 ₽</div>
-                <div class="offer-block__price-old">1500 ₽</div>
-              </div>
-              
-              <a href="#" class="offer-block__item-btn btn">Купить</a>
-            </div>
-            <div class="offer-block__item">
-              <div class="offer-block__item-title">Предложение дня</div>
-              <div class="offer-block__item-text">
-                <span>Скидка 20%</span>
-                на «Название продукта» до конца месяца!
-              </div>
-              <div class="offer-block__item-img">
-                <img src="./images/home/offer-img.jpg" alt="img">
-              </div>
-              <div class="offer-block__price">
-                <div class="offer-block__price-new">1000 ₽</div>
-                <div class="offer-block__price-old">1500 ₽</div>
-              </div>
-              <a href="#" class="offer-block__item-btn btn">Купить</a>
-            </div>
+           
+            <?php endwhile; endif;?>
+            <?php wp_reset_postdata();?>
           </div>
         </div>
       </section>
@@ -157,12 +139,21 @@
       <section class="goods">
         <div class="container">
           <h3 class="goods__title title">Товары для вас</h3>
+          <?php
+              global $product;
+              $catalog__terms = get_terms([
+                  'taxonomy' => 'product_tag',
+                  'orderby'     => 'id', // здесь по какому полю сортировать
+                  'hide_empty'  => false, // скрывать категории без товаров или нет
+
+                                          ]);
+            ?>
           <div class="goods__category">
-            <a href="#" class="goods__category-link">Все</a>
-            <a href="#" class="goods__category-link">Натуральная косметика</a>
-            <a href="#" class="goods__category-link">Для печени</a>
-            <a href="#" class="goods__category-link">Детокс</a>
-            <a href="#" class="goods__category-link">Для зрения</a>
+          <?php foreach($catalog__terms as $catalog__term): ?>
+            <a href="<?php echo get_term_link($catalog__term->term_id);?>" class="goods__category-link">
+            <?php echo $catalog__term->name;?>
+            </a>
+          <?php endforeach;?>
           </div>
           <form class="search-home">
             <div class="search-home__box">
@@ -173,19 +164,35 @@
           
 
           <div class="goods-block">
+
+              <?php
+                $goods = new WP_Query([
+                    'post_type' => 'product',
+                    'posts_per_page' => 6,
+                ])
+                ?>
+              <?php if($goods->have_posts()) : while($goods->have_posts()) : $goods->the_post();?>
             <div class="goods-block__item">
               <div class="goods-block__item-img">
-                <img src="./images/home/product-img.jpg" alt="img">
+                <img src="<?php the_post_thumbnail_url();?>" alt="img">
               </div>
               <div class="goods-block__wrapper">
-                <div class="goods-block__item-title">Гепацелин</div>
+                <div class="goods-block__item-title">
+                  <?php the_title();?>
+                </div>
                 <div class="goods-block__item-text">
-                  в качестве биологически активной добавки к пище – источника флавоноидов...
+                  <?php the_excerpt();?>
                 </div>
                 <div class="goods-block__center">
                   <div class="goods-block__center-price">
-                    <div class="goods-block__center-price--new">1000 ₽</div>
-                    <div class="goods-block__center-price--old">1500 ₽</div>
+                    <div class="goods-block__center-price--new">
+                    <?php echo $product->regular_price;?> ₽
+                    </div>
+                    <?php if(!empty($product->sale_price)) :?>
+                      <div class="goods-block__center-price--old">
+                      <?php echo $product->sale_price;?> ₽
+                      </div>
+                    <?php endif;?>
                   </div>
                   <div class="goods-block__center-reviews">2345</div>
                 </div>
@@ -195,120 +202,13 @@
                 </div>
               </div>
             </div>
-            <div class="goods-block__item">
-              <div class="goods-block__item-img">
-                <img src="./images/home/product-img.jpg" alt="img">
-              </div>
-              <div class="goods-block__wrapper">
-                <div class="goods-block__item-title">Гепацелин</div>
-                <div class="goods-block__item-text">
-                  в качестве биологически активной добавки к пище – источника флавоноидов...
-                </div>
-                <div class="goods-block__center">
-                  <div class="goods-block__center-price">
-                    <div class="goods-block__center-price--new">1000 ₽</div>
-                    <div class="goods-block__center-price--old">1500 ₽</div>
-                  </div>
-                  <div class="goods-block__center-reviews">2345</div>
-                </div>
-                <div class="goods-block__bottom">
-                  <a href="#" class="goods-block__bottom-cart btn">В корзину</a>
-                  <button class="goods-block__bottom-buy">Купить</button>
-                </div>
-              </div>
-            </div>
-            <div class="goods-block__item">
-              <div class="goods-block__item-img">
-                <img src="./images/home/product-img.jpg" alt="img">
-              </div>
-              <div class="goods-block__wrapper">
-                <div class="goods-block__item-title">Гепацелин</div>
-                <div class="goods-block__item-text">
-                  в качестве биологически активной добавки к пище – источника флавоноидов...
-                </div>
-                <div class="goods-block__center">
-                  <div class="goods-block__center-price">
-                    <div class="goods-block__center-price--new">1000 ₽</div>
-                    <div class="goods-block__center-price--old">1500 ₽</div>
-                  </div>
-                  <div class="goods-block__center-reviews">2345</div>
-                </div>
-                <div class="goods-block__bottom">
-                  <a href="#" class="goods-block__bottom-cart btn">В корзину</a>
-                  <button class="goods-block__bottom-buy">Купить</button>
-                </div>
-              </div>
-            </div>
-            <div class="goods-block__item">
-              <div class="goods-block__item-img">
-                <img src="./images/home/product-img.jpg" alt="img">
-              </div>
-              <div class="goods-block__wrapper">
-                <div class="goods-block__item-title">Гепацелин</div>
-                <div class="goods-block__item-text">
-                  в качестве биологически активной добавки к пище – источника флавоноидов...
-                </div>
-                <div class="goods-block__center">
-                  <div class="goods-block__center-price">
-                    <div class="goods-block__center-price--new">1000 ₽</div>
-                    <div class="goods-block__center-price--old">1500 ₽</div>
-                  </div>
-                  <div class="goods-block__center-reviews">2345</div>
-                </div>
-                <div class="goods-block__bottom">
-                  <a href="#" class="goods-block__bottom-cart btn">В корзину</a>
-                  <button class="goods-block__bottom-buy">Купить</button>
-                </div>
-              </div>
-            </div>
-            <div class="goods-block__item">
-              <div class="goods-block__item-img">
-                <img src="./images/home/product-img.jpg" alt="img">
-              </div>
-              <div class="goods-block__wrapper">
-                <div class="goods-block__item-title">Гепацелин</div>
-                <div class="goods-block__item-text">
-                  в качестве биологически активной добавки к пище – источника флавоноидов...
-                </div>
-                <div class="goods-block__center">
-                  <div class="goods-block__center-price">
-                    <div class="goods-block__center-price--new">1000 ₽</div>
-                    <div class="goods-block__center-price--old">1500 ₽</div>
-                  </div>
-                  <div class="goods-block__center-reviews">2345</div>
-                </div>
-                <div class="goods-block__bottom">
-                  <a href="#" class="goods-block__bottom-cart btn">В корзину</a>
-                  <button class="goods-block__bottom-buy">Купить</button>
-                </div>
-              </div>
-            </div>
-            <div class="goods-block__item">
-              <div class="goods-block__item-img">
-                <img src="./images/home/product-img.jpg" alt="img">
-              </div>
-              <div class="goods-block__wrapper">
-                <div class="goods-block__item-title">Гепацелин</div>
-                <div class="goods-block__item-text">
-                  в качестве биологически активной добавки к пище – источника флавоноидов...
-                </div>
-                <div class="goods-block__center">
-                  <div class="goods-block__center-price">
-                    <div class="goods-block__center-price--new">1000 ₽</div>
-                    <div class="goods-block__center-price--old">1500 ₽</div>
-                  </div>
-                  <div class="goods-block__center-reviews">2345</div>
-                </div>
-                <div class="goods-block__bottom">
-                  <a href="#" class="goods-block__bottom-cart btn">В корзину</a>
-                  <button class="goods-block__bottom-buy">Купить</button>
-                </div>
-              </div>
-            </div>
+            <?php endwhile; endif;?>
+           
+           <?php wp_reset_postdata();?>
             
           </div>
 
-          <a href="#" class="goods__btn btn">Смотреть все товары</a>
+          <a href="<?php echo get_permalink( wc_get_page_id( 'shop' ) );?>" class="goods__btn btn">Смотреть все товары</a>
         </div>
       </section>
 
