@@ -52,9 +52,9 @@
           <div class="header-bottom__info">
             <div class="header-bottom__cart">
               <div class="header-bottom__cart-text">Корзина</div>
-              <a href="./cart.html" class="header-bottom__info-basket">
+              <a href="<?php echo wc_get_cart_url()?>" class="header-bottom__info-basket">
                 <img src="<?php echo get_template_directory_uri()?>/assets/images/home/basket.svg" alt="img" class="header-bottom__info-img">
-                <span class="cart-badge">3</span>
+                <span class="cart-badge"><?php echo count( WC()->cart->get_cart() ); ?></span>
               </a>
             </div>
            

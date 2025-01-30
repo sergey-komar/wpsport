@@ -39,6 +39,23 @@ if( function_exists('acf_add_options_page') ) {
 }
 
 
+// САЙДБАР
+add_action( 'widgets_init', function () {
+	register_sidebar(
+		array(
+			'name'          => __( 'Sidebar', 'sport' ),
+			'id'            => 'sidebar-1',
+			'description'   => __( 'Add widgets here to appear in your sidebar.', 'wooeshop' ),
+			'before_widget' => '<section id="%1$s" class="widget %2$s">',
+			'after_widget'  => '</section>',
+			'before_title'  => '<h2 class="widget-title">',
+			'after_title'   => '</h2>',
+		)
+	);
+} );
+
+
+
 //УБИРАЕМ span и br в contact form 7
 add_filter('wpcf7_form_elements', function($content) {
     $content = preg_replace('/<(span).*?class="\s*(?:.*\s)?wpcf7-form-control-wrap(?:\s[^"]+)?\s*"[^\>]*>(.*)<\/\1>/i', '\2', $content);
@@ -56,6 +73,7 @@ add_filter('wpcf7_autop_or_not', '__return_false');
 require_once get_template_directory() . '/inc/breadcrumbs.php';
 require_once get_template_directory() . '/inc/custom-type.php';
 require_once get_template_directory() . '/inc/sort-filter.php';
+require_once get_template_directory() . '/inc/woocommerce-hooks.php';
 
 
 

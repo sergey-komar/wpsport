@@ -16,7 +16,7 @@
               <div class="heading-block__info-text">
               <?php the_field('glavnaya_pervyj_blok_tekst');?>
               </div>
-              <a href="#" class="heading-block__info-link btn">Перейти к покупкам</a>
+              <a href="<?php echo get_permalink( wc_get_page_id( 'shop' ) );?>" class="heading-block__info-link btn">Перейти к покупкам</a>
               <button class="heading-block__info-btn">
               <?php the_field('glavnaya_pervyj_blok_skidka');?>
               </button>
@@ -113,6 +113,14 @@
               <div class="offer-block__item-img">
                 <img src="<?php the_post_thumbnail_url();?>" alt="img">
               </div>
+
+              <?php if(!empty(get_field('tajmer'))):?>
+                  <div class="tajmer__box">
+                    <?php if(get_field('tajmer'))
+                      echo do_shortcode(''.get_field('tajmer').'');?>
+                  </div>
+              <?php endif;?>
+
               <div class="offer-block__price">
                 <div class="offer-block__price-new">
                   <?php echo $product->regular_price;?> ₽
@@ -120,14 +128,10 @@
                 <div class="offer-block__price-old">
                 <?php echo $product->sale_price;?> ₽
                 </div>
-               
               </div>
+            
               <a href="<?php the_permalink()?>" class="offer-block__item-btn btn">Купить</a>
-             <?php if(!empty(get_field('tajmer'))):?>
-              <div class="test">
-                <?php echo do_shortcode('[hurrytimer id="202"]')?>
-              </div>
-            <?php endif;?>
+            
             </div>
            
             <?php endwhile; endif;?>
@@ -155,12 +159,13 @@
             </a>
           <?php endforeach;?>
           </div>
-          <form class="search-home">
+          
+          <div class="search-home">
             <div class="search-home__box">
-              <input type="text" class="search-home__input" placeholder="Введите ключевые слова для поиска">
+              <?php aws_get_search_form( true ); ?>
             </div>
-            <button class="search-home__btn btn">Искать</button>
-          </form>
+           
+          </div>
           
 
           <div class="goods-block">
@@ -177,9 +182,9 @@
                 <img src="<?php the_post_thumbnail_url();?>" alt="img">
               </div>
               <div class="goods-block__wrapper">
-                <div class="goods-block__item-title">
+                <a href="<?php the_permalink();?>" class="goods-block__item-title">
                   <?php the_title();?>
-                </div>
+                </a>
                 <div class="goods-block__item-text">
                   <?php the_excerpt();?>
                 </div>
@@ -194,10 +199,15 @@
                       </div>
                     <?php endif;?>
                   </div>
-                  <div class="goods-block__center-reviews">2345</div>
+                  <div class="goods-block__center-reviews">
+                    <?php $rating_cnt = $product->get_rating_count();?>
+                    <?php echo $rating_cnt;?>
+                  </div>
+                
                 </div>
+               
                 <div class="goods-block__bottom">
-                  <a href="#" class="goods-block__bottom-cart btn">В корзину</a>
+                  <?php woocommerce_template_loop_add_to_cart()?>
                   <button class="goods-block__bottom-buy">Купить</button>
                 </div>
               </div>
@@ -211,7 +221,7 @@
           <a href="<?php echo get_permalink( wc_get_page_id( 'shop' ) );?>" class="goods__btn btn">Смотреть все товары</a>
         </div>
       </section>
-
+ 
       <section class="hit">
         <div class="container">
           <div class="hit__subtitle">Хит продаж</div>
@@ -404,7 +414,7 @@
           </div>
          
         </div>
-      </section> 
+      </section>  
 
       
     </main>

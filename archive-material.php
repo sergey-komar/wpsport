@@ -15,7 +15,10 @@
     
         
     <section class="news">
+    
         <div class="container">
+        
+        <h1 class="news__title"><?php post_type_archive_title(); ?></h1>
             <div class="news-block">
                 <?php
                 $material = new WP_Query([

@@ -12,20 +12,23 @@
         
     </div>
 
-        <div class="blog-posts-filter">
-            <div class="container">
-                    <div class="sorting-desc__title">
-                        <span>Сортировать по:</span>
-                        <?php events_get_orderby_html_list(); ?>
-                    </div>
-            </div>
-            <!-- СОРТИРОВКА -->
-          
-        </div>
+        
 
 
     <section class="news">
         <div class="container">
+        <h1 class="news__title"><?php post_type_archive_title(); ?></h1>
+
+        <!-- СОРТИРОВКА -->
+        <div class="blog-posts-filter">
+            <div class="sorting-desc__title">
+                <span>Сортировать по:</span>
+                <?php events_get_orderby_html_list(); ?>
+            </div>
+        </div>
+        <!-- СОРТИРОВКА -->
+
+
             <div class="news-block">
                 <?php
                 $blog = new WP_Query([
